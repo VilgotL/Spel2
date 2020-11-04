@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Template
 {
@@ -11,6 +12,10 @@ namespace Template
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        Player p;
+        List<Bullet> bL;
+
         //KOmentarrrr
         public Game1()
         {
@@ -39,6 +44,8 @@ namespace Template
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            p = new Player(Content.Load<Texture2D>("xwing"), new Vector2(200, 300), new Rectangle(200, 300, 50, 50));
+            bL = new List<Bullet>();
 
             // TODO: use this.Content to load your game content here 
         }
@@ -61,7 +68,16 @@ namespace Template
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            KeyboardState kstate = Keyboard.GetState();
+            p.Update();
+            if (kstate.IsKeyDown(Keys.Space))
+            {
+                bL.Add(new Bullet(Content.Load<Texture2D>("bullet4"), p.Position, new Rectangle(p.Position.ToPoint(), new Point(20, 20))));
+            }
+            foreach(Bullet element in bL)
+            {
+                element.Update();
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -76,6 +92,15 @@ namespace Template
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here.
+
+            spriteBatch.Begin();
+            p.Draw(spriteBatch);
+            foreach(Bullet element in bL)
+            {
+                element.Draw(spriteBatch);
+            }
+            
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
