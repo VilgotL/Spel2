@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System;
 
 namespace Template
 {
@@ -15,6 +17,11 @@ namespace Template
 
         Player p;
         List<Bullet> bL;
+        List<Enemy> eL;
+        Stopwatch time;
+
+        KeyboardState kNewState;
+        KeyboardState kOldState;
 
         //KOmentarrrr
         public Game1()
@@ -46,6 +53,9 @@ namespace Template
             spriteBatch = new SpriteBatch(GraphicsDevice);
             p = new Player(Content.Load<Texture2D>("xwing"), new Vector2(200, 300), new Rectangle(200, 300, 50, 50));
             bL = new List<Bullet>();
+            eL = new List<Enemy>();
+            time = new Stopwatch();
+            time.Start();
 
             // TODO: use this.Content to load your game content here 
         }
@@ -68,16 +78,31 @@ namespace Template
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            KeyboardState kstate = Keyboard.GetState();
+            kNewState = Keyboard.GetState();
             p.Update();
-            if (kstate.IsKeyDown(Keys.Space))
+            if (kNewState.IsKeyDown(Keys.Space) && kOldState.IsKeyUp(Keys.Space))
             {
-                bL.Add(new Bullet(Content.Load<Texture2D>("bullet4"), p.Position, new Rectangle(p.Position.ToPoint(), new Point(20, 20))));
+                bL.Add(new Bullet(Content.Load<Texture2D>("bullet4"), new Vector2(p.Position.X + 16, p.Position.Y), new Rectangle(p.Position.ToPoint(), new Point(20, 20))));
             }
+
+            if (time.ElapsedMilliseconds > 1000)
+            {
+                time.Stop();
+                time.Reset();
+                eL.Add(new Enemy(Content.Load<Texture2D>("xwing"), new Vector2(350, -50), new Rectangle(350, -50, 40, 40)));
+                time.Start();
+            }
+
             foreach(Bullet element in bL)
             {
                 element.Update();
             }
+            foreach(Enemy element in eL)
+            {
+                element.Update();
+            }
+
+            kOldState = kNewState;
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -99,7 +124,10 @@ namespace Template
             {
                 element.Draw(spriteBatch);
             }
-            
+            foreach(Enemy element in eL)
+            {
+                element.Draw(spriteBatch);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
