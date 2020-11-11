@@ -19,6 +19,16 @@ namespace Template
             rectangle = r;
         }
 
+        public Rectangle Rec
+        {
+            get { return rectangle; }
+        }
+
+        public Vector2 Pos
+        {
+            get { return position; }
+        }
+
         public virtual void Update()
         {
 

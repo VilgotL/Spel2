@@ -15,6 +15,9 @@ namespace Template
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Random rnd = new Random();
+        int enemyXpos;
+
         Player p;
         List<Bullet> bL;
         List<Enemy> eL;
@@ -27,6 +30,8 @@ namespace Template
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 800;
+            graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
 
@@ -51,7 +56,7 @@ namespace Template
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            p = new Player(Content.Load<Texture2D>("xwing"), new Vector2(200, 300), new Rectangle(200, 300, 50, 50));
+            p = new Player(Content.Load<Texture2D>("xwing"), new Vector2(200, 600), new Rectangle(200, 600, 50, 50));
             bL = new List<Bullet>();
             eL = new List<Enemy>();
             time = new Stopwatch();
@@ -85,21 +90,36 @@ namespace Template
                 bL.Add(new Bullet(Content.Load<Texture2D>("bullet4"), new Vector2(p.Position.X + 16, p.Position.Y), new Rectangle(p.Position.ToPoint(), new Point(20, 20))));
             }
 
-            if (time.ElapsedMilliseconds > 1000)
+            if (time.ElapsedMilliseconds > 1500)
             {
                 time.Stop();
                 time.Reset();
-                eL.Add(new Enemy(Content.Load<Texture2D>("xwing"), new Vector2(350, -50), new Rectangle(350, -50, 40, 40)));
+                enemyXpos = rnd.Next(0, 601);
+                eL.Add(new Enemy(Content.Load<Texture2D>("xwingRotaded"), new Vector2(enemyXpos, -50), new Rectangle(enemyXpos, -50, 40, 40)));
                 time.Start();
             }
 
             foreach(Bullet element in bL)
             {
                 element.Update();
+                foreach (Enemy enemy in eL)
+                {
+                    if(element.Rec.Intersects(enemy.Rec))
+                    {
+                        enemy.Remove();
+                        element.Remove();
+                    }
+                }
             }
             foreach(Enemy element in eL)
             {
                 element.Update();
+                if (element.Rec.Intersects(p.Rec))
+                {
+                    Exit();
+                }
+                if (element.Pos.Y >= 800)
+                    Exit();
             }
 
             kOldState = kNewState;

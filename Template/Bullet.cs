@@ -7,6 +7,8 @@ namespace Template
 {
     class Bullet : BaseClass
     {
+        protected float speed = 5f;
+
         public Bullet(Texture2D t, Vector2 p, Rectangle r) : base(t, p, r)
         {
             texture = t;
@@ -14,9 +16,15 @@ namespace Template
             rectangle = r;
         }
 
+        public void Remove()
+        {
+            speed = 0;
+            position.X = -100;
+            position.Y = -100;
+        }
         public override void Update()
         {
-            position.Y -= 5;
+            position.Y -= speed;
             rectangle.Location = position.ToPoint();
         }
 

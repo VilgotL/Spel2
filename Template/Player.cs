@@ -22,13 +22,13 @@ namespace Template
         {
             KeyboardState kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.D))
-                position.X += 3;
+                position.X += 5;
             if (kstate.IsKeyDown(Keys.A))
-                position.X -= 3;
+                position.X -= 5;
             if (kstate.IsKeyDown(Keys.W))
-                position.Y -= 3;
+                position.Y -= 5;
             if (kstate.IsKeyDown(Keys.S))
-                position.Y += 3;
+                position.Y += 5;
             rectangle.Location = position.ToPoint();
         }
         public override void Draw(SpriteBatch spriteBatch)

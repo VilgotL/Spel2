@@ -9,6 +9,8 @@ namespace Template
 {
     class Enemy : BaseClass
     {
+        protected float speed = 2f;
+
         public Enemy(Texture2D t, Vector2 p, Rectangle r) : base(t, p, r)
         {
             texture = t;
@@ -16,12 +18,18 @@ namespace Template
             rectangle = r;
         }
 
-        public override void Update()
+        public void Remove()
         {
-            position.Y += 2;
-            rectangle.Location = position.ToPoint();
+            speed = 0;
+            position.X = -100;
+            position.Y = -100;
         }
 
+        public override void Update()
+        {
+            position.Y += speed;
+            rectangle.Location = position.ToPoint();
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, rectangle, Color.Red);
