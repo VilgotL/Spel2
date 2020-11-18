@@ -7,39 +7,23 @@ using System;
 
 namespace Template
 {
-    class Enemy : BaseClass
+    class SidewaysEnemy : BaseClass
     {
         protected float speed = 2f;
         protected static Stopwatch time = new Stopwatch();
-        protected static int spawnTime = 2500;
         protected static Random rnd = new Random();
 
-        public Enemy(Texture2D t, Vector2 p, Rectangle r) : base(t, p, r)
+        public SidewaysEnemy(Texture2D t, Vector2 p, Rectangle r) : base(t, p, r)
         {
             texture = t;
             position = p;
             rectangle = r;
         }
 
-        public static int XPos
+        public int YPos
         {
             get;
             private set;
-        }
-
-        public static Stopwatch Time
-        {
-            get { return time; }
-        }
-
-        public static int SpawnTime
-        {
-            get { return spawnTime; }
-        }
-
-        public static void TimeStart()
-        {
-            time.Start();
         }
 
         public void Remove()
@@ -49,15 +33,14 @@ namespace Template
             position.Y = -100;
         }
 
-        public static void UpdateForEach()
+        public void UpdateForEach()
         {
-            XPos = rnd.Next(0, 601);
-            spawnTime -= spawnTime / 50;
+            YPos = rnd.Next(400, 801);
         }
 
         public override void Update()
         {
-            position.Y += speed;
+            position.X += speed;
             rectangle.Location = position.ToPoint();
         }
         public override void Draw(SpriteBatch spriteBatch)

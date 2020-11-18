@@ -15,13 +15,10 @@ namespace Template
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Random rnd = new Random();
-        int enemyXpos;
-
         Player p;
         List<Bullet> bL;
         List<Enemy> eL;
-        Stopwatch time;
+        List<SidewaysEnemy> sEL;
 
         KeyboardState kNewState;
         KeyboardState kOldState;
@@ -59,8 +56,8 @@ namespace Template
             p = new Player(Content.Load<Texture2D>("xwing"), new Vector2(200, 600), new Rectangle(200, 600, 50, 50));
             bL = new List<Bullet>();
             eL = new List<Enemy>();
-            time = new Stopwatch();
-            time.Start();
+            sEL = new List<SidewaysEnemy>();
+            Enemy.TimeStart();
 
             // TODO: use this.Content to load your game content here 
         }
@@ -90,16 +87,16 @@ namespace Template
                 bL.Add(new Bullet(Content.Load<Texture2D>("bullet4"), new Vector2(p.Position.X + 16, p.Position.Y), new Rectangle(p.Position.ToPoint(), new Point(20, 20))));
             }
 
-            if (time.ElapsedMilliseconds > 1500)
+            if (Enemy.Time.ElapsedMilliseconds > Enemy.SpawnTime)
             {
-                time.Stop();
-                time.Reset();
-                enemyXpos = rnd.Next(0, 601);
-                eL.Add(new Enemy(Content.Load<Texture2D>("xwingRotaded"), new Vector2(enemyXpos, -50), new Rectangle(enemyXpos, -50, 40, 40)));
-                time.Start();
+                Enemy.UpdateForEach();
+                Enemy.Time.Stop();
+                Enemy.Time.Reset();
+                eL.Add(new Enemy(Content.Load<Texture2D>("xwingRotaded"), new Vector2(Enemy.XPos, -50), new Rectangle(Enemy.XPos, -50, 40, 40)));
+                Enemy.Time.Start();
             }
 
-            foreach(Bullet element in bL)
+            foreach (Bullet element in bL)
             {
                 element.Update();
                 foreach (Enemy enemy in eL)
